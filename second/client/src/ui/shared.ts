@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import COLORS from "../constants/colors.ts";
+import COLORS from "../constants/colors";
 
 export const ScreenWithCenterBlock = styled.section<{
     image?: string

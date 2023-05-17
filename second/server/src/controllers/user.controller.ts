@@ -9,10 +9,6 @@ export const registerUser = async (req: Request, res: Response, next: NextFuncti
     try {
         const data: UserData = req.body
 
-        console.log({
-            body: data
-        })
-
         if (!data.name || !data.email || !data.password) {
             throw new Error('Incorrect data')
         }

@@ -1,5 +1,5 @@
 import { createGlobalStyle } from 'styled-components'
-import COLORS from "../constants/colors.ts";
+import COLORS from "../constants/colors";
 
 const GlobalStyles = createGlobalStyle`
   // default styles reset

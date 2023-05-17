@@ -10,8 +10,6 @@ import {ResponseType} from "../types/request"
 
 const RegisterForm: FC = () => {
     const onFinish = async (values: FormValues): Promise<void> => {
-        console.log('Success:', values);
-
         if (values.password === values.password2) {
             const response: ResponseType = await request(POST, ADD_USER, {
                 name: values.name,
@@ -28,7 +26,6 @@ const RegisterForm: FC = () => {
         } else {
             validationError('Passwords should be same!');
         }
-
     };
 
     const [api, contextHolder] = notification.useNotification();

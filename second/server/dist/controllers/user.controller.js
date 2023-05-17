@@ -6,9 +6,6 @@ const user_model_1 = require("../models/user.model");
 const registerUser = async (req, res, next) => {
     try {
         const data = req.body;
-        console.log({
-            body: data
-        });
         if (!data.name || !data.email || !data.password) {
             throw new Error('Incorrect data');
         }
