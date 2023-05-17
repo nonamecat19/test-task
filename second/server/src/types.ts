@@ -9,3 +9,4 @@ export type ResponseType = {
     data: unknown
     errorMessage: string
 }
+

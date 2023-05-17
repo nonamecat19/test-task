@@ -1,28 +1,33 @@
-import {Schema, model, Model} from 'mongoose'
+import {model, Model, Schema} from 'mongoose'
 import {USER} from "../constants/models";
 import {UserData} from "../types";
-import validator from 'validator';
 import bcrypt from 'bcrypt';
+import validator from "validator";
 
 const UserSchema: Schema<UserData> = new Schema({
-    name: {
-        type: String,
-        required: true,
-        unique: true,
-        minlength: 4
-    },
     email: {
         type: String,
-        required: true,
+        unique: true,
         validate(value: string) {
             if (!validator.isEmail(value)) {
                 throw new Error("Email is invalid")
             }
         }
     },
+    name: {
+        type: String,
+        required: true,
+        minlength: [4, "Name is too short"],
+        validate(value: string) {
+            if (value.length < 4) {
+                throw new Error("Name is too short")
+            }
+        }
+    },
     password: {
         type: String,
-        required: true
+        required: true,
+        minlength: [4, "Password is too short"]
     }
 })
 

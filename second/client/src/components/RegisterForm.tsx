@@ -1,29 +1,42 @@
 import {FC} from 'react';
 import {Button, Form, Input, notification} from 'antd';
-import {BACKGROUND_IMAGE} from '../constants/images.ts';
-import COLORS from '../constants/colors.ts';
-import {RoundedBlock, ScreenWithCenterBlock} from "../ui/shared.ts";
-import {FormValues} from "../types/form.ts";
+import {BACKGROUND_IMAGE} from '../constants/images';
+import COLORS from '../constants/colors';
+import {RoundedBlock, ScreenWithCenterBlock} from "../ui/shared";
+import {FormValues} from "../types/form";
+import request from "../utils/request";
+import {ADD_USER, POST} from "../constants/request";
+import {ResponseType} from "../types/request"
 
 const RegisterForm: FC = () => {
-    const onFinish = (values: FormValues): void => {
+    const onFinish = async (values: FormValues): Promise<void> => {
         console.log('Success:', values);
 
-        if (values.password === values.passwordConfirm) {
-            registerSuccess()
-        } else {
-            validationError()
-        }
+        if (values.password === values.password2) {
+            const response: ResponseType = await request(POST, ADD_USER, {
+                name: values.name,
+                email: values.email,
+                password: values.password
+            })
 
+            if (response.isError) {
+                validationError(response.errorMessage);
+            } else {
+                registerSuccess();
+            }
+
+        } else {
+            validationError('Passwords should be same!');
+        }
 
     };
 
     const [api, contextHolder] = notification.useNotification();
 
-    const validationError = (): void => {
+    const validationError = (error: string): void => {
         api.error({
             message: 'Validation error',
-            description: 'Check data and try again.',
+            description: error,
             duration: 1.5
         });
     };
@@ -43,18 +56,18 @@ const RegisterForm: FC = () => {
                     name='basic'
                     initialValues={{remember: true}}
                     onFinish={onFinish}
-                    onFinishFailed={validationError}
+                    onFinishFailed={() => validationError('Check data!')}
                     autoComplete='off'
                     labelCol={{span: 8}}
                     wrapperCol={{span: 16}}
                 >
                     <Form.Item
                         label='Username'
-                        name='username'
+                        name='name'
                         rules={[
                             {
                                 required: true,
-                                message: 'Please input username!'
+                                message: 'Please input name!'
                             },
                             {
                                 min: 4,
@@ -91,7 +104,7 @@ const RegisterForm: FC = () => {
                                 message: 'Please input your password!'
                             },
                             {
-                                min: 8,
+                                min: 4,
                                 message: 'Password is too short'
                             }
                         ]}
@@ -101,15 +114,15 @@ const RegisterForm: FC = () => {
 
                     <Form.Item
                         label='Confirm'
-                        name='passwordConfirm'
+                        name='password2'
                         dependencies={['password']}
                         rules={[
                             {
                                 required: true,
                                 message: 'Please confirm your password!'
                             },
-                            ({getFieldValue}) => ({
-                                validator(_, value) {
+                            ({getFieldValue}: any) => ({
+                                validator(_: string, value: string) {
                                     if (!value || getFieldValue("password") === value) {
                                         return Promise.resolve();
                                     }

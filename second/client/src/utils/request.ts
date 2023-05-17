@@ -1,36 +1,21 @@
+import {RequestMethod, ResponseType} from "../types/request";
 import axios from "axios";
-import {RequestMethod, RequestPath} from "../constants/Requests.ts";
 
-export type ResponseType = {
-    isError: boolean
-    data: any
-    errorMessage: string
-    status: number
-}
-
-const Request = async (method: RequestMethod, path: RequestPath, params: Record<string, string> = {}): Promise<ResponseType> => {
+const Request = async (method: RequestMethod, path: string, params: Record<string, string> = {}): Promise<ResponseType> => {
 
     const options = {
-        method: method,
         url: path,
+        method: method,
         data: params
     }
 
-    try {
-        const response = await axios.request(options)
-        return {
-            isError: false,
-            data: response.data,
-            errorMessage: '',
-            status: response.status
-        }
-    } catch (error: any) {
-        return {
-            isError: true,
-            data: null,
-            errorMessage: error.message,
-            status: error.status
-        }
-    }
+    return axios
+        .request(options)
+        .then((res: any) => {
+            return res
+        })
+        .catch((error: any) => {
+            return error.response.data
+        })
 }
 export default Request

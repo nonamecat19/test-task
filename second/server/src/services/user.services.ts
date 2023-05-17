@@ -5,7 +5,7 @@ import {Document} from "mongoose";
 export const addUser = async (data: Document): Promise<ResponseType> => {
     try {
 
-        // await data.save()
+        await data.save()
 
         return {
             isError: false,
@@ -13,6 +13,9 @@ export const addUser = async (data: Document): Promise<ResponseType> => {
             errorMessage: ''
         }
     } catch (error: any) {
-        throw new Error('Server error')
+        if (error.message.includes('E11000')) {
+            throw new Error("This email already registered")
+        }
+        throw new Error(error.message)
     }
 }

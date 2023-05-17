@@ -1,4 +1,4 @@
-import RegisterForm from "./RegisterForm.tsx";
+import RegisterForm from "./RegisterForm";
 import {FC} from "react";
 // import styled from 'styled-components';
 

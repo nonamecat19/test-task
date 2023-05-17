@@ -6,13 +6,18 @@ const user_model_1 = require("../models/user.model");
 const registerUser = async (req, res, next) => {
     try {
         const data = req.body;
+        console.log({
+            body: data
+        });
         if (!data.name || !data.email || !data.password) {
             throw new Error('Incorrect data');
         }
         const user = new user_model_1.User(data);
+        const usersWithSameEmail = await user_model_1.User.findOne({ email: user.email });
+        if (usersWithSameEmail) {
+            throw new Error('User with same email already registered!');
+        }
         const response = await (0, user_services_1.addUser)(user);
-        console.log(user);
-        console.log(response);
         res
             .status(200)
             .json(response);
@@ -23,7 +28,7 @@ const registerUser = async (req, res, next) => {
             .json({
             isError: true,
             data: null,
-            errorMessage: error.message
+            errorMessage: error.message,
         });
     }
 };
